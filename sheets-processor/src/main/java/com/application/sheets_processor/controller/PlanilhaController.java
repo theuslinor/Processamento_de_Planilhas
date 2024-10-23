@@ -3,6 +3,7 @@ package com.application.sheets_processor.controller;
 import com.application.sheets_processor.services.PlanilhaServices;
 import lombok.AllArgsConstructor;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.exceptions.NotOfficeXmlFileException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,10 +20,10 @@ public class PlanilhaController {
     private final PlanilhaServices planilhaServices;
 
     @PostMapping("/processar")
-    public ResponseEntity<String> processarPlanilha() throws IOException {
+    public ResponseEntity<String> processarPlanilha(@RequestParam String caminho) throws IOException {
 
         try{
-            planilhaServices.processarPlanilha("planilha_clientes.xlsx");
+            planilhaServices.processarPlanilha(caminho);
             return ResponseEntity.ok("Planilha processada com sucesso!");
 
         } catch (FileNotFoundException e) {
@@ -31,7 +32,11 @@ public class PlanilhaController {
         } catch (InvalidFormatException e) {
             return ResponseEntity.badRequest().body("Formato inválido da planilha: " + e.getMessage());
 
-        } catch (IOException e) {
+        } catch (NotOfficeXmlFileException e){
+            return ResponseEntity.badRequest().body("Formato inválido: " + e.getMessage());
+        }
+
+        catch (IOException e) {
             return ResponseEntity.badRequest().body("Erro de I/O ao processar o arquivo: " + e.getMessage());
         }
 
