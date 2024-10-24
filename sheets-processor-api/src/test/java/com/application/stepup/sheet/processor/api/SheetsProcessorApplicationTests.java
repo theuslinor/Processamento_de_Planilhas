@@ -1,4 +1,4 @@
-package com.application.sheets_processor;
+package com.application.stepup.sheet.processor.api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
